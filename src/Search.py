@@ -184,9 +184,12 @@ def get(r: Request) -> Page:
                 if '@' in x and len(x.split('@')) == 2:
                     to_append = user_result(User(x), x, Network(x.split('@')[1]))
             elif i.url.startswith('https://github.com/') and len(i.url.removesuffix('/').split('://')[1].split('/')) == 3:
-                to_append = github_result(requests.get(
-                    f"https://api.github.com/repos/{i.url.removesuffix('/').split('/')[-2]}/{i.url.removesuffix('/').split('/')[-1]}"
-                ).json())
+                try:
+                    to_append = github_result(requests.get(
+                        f"https://api.github.com/repos/{i.url.removesuffix('/').split('/')[-2]}/{i.url.removesuffix('/').split('/')[-1]}"
+                    ).json())
+                except KeyError:
+                    pass
             elif (i.url.startswith('https://twitter.com/') or i.url.startswith('https://x.com/')) and 'status' in i.url:
                 to_append = x_post(i)
             elif i.url.startswith('https://') and i.url.split('/')[3].startswith('@'):
